@@ -1,8 +1,9 @@
 const authServices = require('../services/auth')
 
-function cadastrarUsuario(req, res) {
-    
-    const resposta = authServices.cadastrarUsuario(req.body) 
+async function cadastrarUsuario(req, res) {
+    const resposta = await authServices.cadastrarUsuario(req.body)
+    console.log(resposta)
+    res.status(resposta.status).json(resposta)
 }
 
 module.exports = {cadastrarUsuario}

@@ -16,15 +16,15 @@ function validar(email) {
 
 
 function verificarExistencia(email) {
-    usuarios.verificarEmailExistente(email, (err, resultado) => {
-        if (err) {
-            return false
-        }
+    return new Promise((resolve, reject) => {
+        usuarios.verificarEmailExistente(email, (err, resultado) => {
+            if (err) {
+                return reject(err);
+            }
 
-        if(resultado.length > 0) {
-            return true
-        }
-    })
+            return resolve(resultado.length > 0);
+        });
+    });
 }
 
 module.exports = {validar, verificarExistencia }

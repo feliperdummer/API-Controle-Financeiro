@@ -2,10 +2,10 @@ const connection = require('../database/connection')
 
 class Usuario {
 
-    criarUsuario(nome, email, cpf, senhaCript, callback) {
-        const query = `INSERT INTO usuarios (nome, email, cpf, senha) VALUES (?,?,?,?)`
+    criarUsuario(nome, email, cpf, senhaHash, callback) {
+        const query = `INSERT INTO usuarios (nome, email, cpf, senha_hash) VALUES (?,?,?,?)`
 
-        connection.query(query, [nome, email, cpf, senhaCript], callback)
+        connection.query(query, [nome, email, cpf, senhaHash], callback)
     }
 
     pegarUsuario(email, callback) {
