@@ -17,16 +17,15 @@ function validar(cpf) {
 
 
 async function verificarExistencia(cpf) {
-    return new Promise((resolve) => {
-        usuarios.verificarCpfExistente(cpf, (err, resultado) => {
-            if (err) {
-                return resolve(false);
-            }
+    try {
+        const resultado = await usuarios.verificarCpfExistente(cpf);
 
-            return resolve(resultado.length > 0);
-        });
-    });
+        return resultado.length > 0;
+
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
 }
-
 
 module.exports = {validar, verificarExistencia}

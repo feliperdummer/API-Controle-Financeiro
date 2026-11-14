@@ -15,16 +15,16 @@ function validar(email) {
 }
 
 
-function verificarExistencia(email) {
-    return new Promise((resolve, reject) => {
-        usuarios.verificarEmailExistente(email, (err, resultado) => {
-            if (err) {
-                return reject(err);
-            }
+async function verificarExistencia(email) {
+    try {
+        const resultado = await usuarios.verificarEmailExistente(email);
 
-            return resolve(resultado.length > 0);
-        });
-    });
+        return resultado;
+
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
 }
 
 module.exports = {validar, verificarExistencia }
