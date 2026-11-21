@@ -15,16 +15,16 @@ function validar(email) {
 }
 
 
-function verificarExistencia(email) {
-    usuarios.verificarEmailExistente(email, (err, resultado) => {
-        if (err) {
-            return false
-        }
+async function verificarExistencia(email) {
+    try {
+        const resultado = await usuarios.verificarEmailExistente(email);
 
-        if(resultado.length > 0) {
-            return true
-        }
-    })
+        return resultado;
+
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
 }
 
 module.exports = {validar, verificarExistencia }
