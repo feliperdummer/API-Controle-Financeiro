@@ -7,6 +7,8 @@ router.get('/', fontesDestinosController.listar);
 
 router.post('/', fontesDestinosController.cadastrar);
 
-router.put('/:id', fontesDestinosController.update);
+router.put('/:id', fontesDestinosController.atualizar);
 
-router.delete('/:id', fontesDestinosController.delete);
+router.delete('/:id', fontesDestinosController.deletar);
+
+module.exports = router

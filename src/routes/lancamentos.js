@@ -9,6 +9,8 @@ router.get('/:id', lancamentosController.listarPorId);
 
 router.post('/', lancamentosController.cadastrar);
 
-router.put('/:id', lancamentosController.update);
+router.put('/:id', lancamentosController.atualizar);
 
-router.delete('/:id', lancamentosControlller.delete);
+router.delete('/:id', lancamentosControlller.deletar);
+
+module.exports = router
