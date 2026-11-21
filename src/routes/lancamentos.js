@@ -1,16 +1,17 @@
 const express = require('express')
-const lancamentosController = require('../controller/lancamentos')
+const lancamentosController = require('../controllers/lancamentos')
+const authMiddleware = require('../middleware/auth')
 
-const router = express.router()
+const router = express.Router()
 
-router.get('/', lancamentosController.listar);
+router.get('/', authMiddleware.validarToken, lancamentosController.listar);
 
-router.get('/:id', lancamentosController.listarPorId);
+router.get('/:id', authMiddleware.validarToken, lancamentosController.listarPorId);
 
-router.post('/', lancamentosController.cadastrar);
+router.post('/', authMiddleware.validarToken, lancamentosController.cadastrar);
 
-router.put('/:id', lancamentosController.atualizar);
+router.put('/:id', authMiddleware.validarToken, lancamentosController.atualizar);
 
-router.delete('/:id', lancamentosControlller.deletar);
+router.delete('/:id', authMiddleware.validarToken, lancamentosController.deletar);
 
 module.exports = router

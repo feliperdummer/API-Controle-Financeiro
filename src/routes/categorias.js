@@ -1,13 +1,15 @@
 const express = require('express')
 const categoriasController = require('../controllers/categorias')
+const authMiddleware = require('../middleware/auth')
+
 const router = express.Router()
 
-router.get('/', categoriasController.listar);
+router.get('/', authMiddleware.validarToken, categoriasController.listar);
 
-router.post('/', categoriasController.cadastrar);
+router.post('/', authMiddleware.validarToken, categoriasController.cadastrar);
 
-router.put('/:id', categoriasController.atualizar);
+router.put('/:id', authMiddleware.validarToken, categoriasController.atualizar);
 
-router.delete('/:id', categoriasController.deletar);
+router.delete('/:id', authMiddleware.validarToken, categoriasController.deletar);
 
 module.exports = router
