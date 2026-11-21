@@ -11,38 +11,38 @@ const usuarios = new Usuarios()
 async function cadastrarUsuario(data) {
     const {nome, cpf, email, senha} = data || {};
 
-    if(!nome || nome.length > 120) {
-        return {
-            status: 400,
-            mensagem: "Nome inválido."
-        }
+    const nomeNormalizado = nome?.trim();
+    const emailNormalizado = email?.trim().toLowerCase();
+    const cpfNormalizado = cpf?.replace(/\D/g, '');
+
+    if(!nomeNormalizado || nomeNormalizado.length > 120) {
+        return {status: 400, mensagem: "Nome inválido."}
     }
     
-    if(!cpfUtils.validar(cpf) || await cpfUtils.verificarExistencia(cpf.replace(/\D/g, ''))) {
-      return {
-            status: 400,
-            mensagem: "CPF inválido."
-        }  
+    if(!cpfUtils.validar(cpfNormalizado)) {
+      return {status: 400, mensagem: "CPF inválido."}  
     }
 
-    if(!emailUtils.validar(email) || await (await emailUtils.verificarExistencia(email)).length > 0) {
-        return {
-            status: 400,
-            mensagem: "Email inválido."
-        }
+    if(await cpfUtils.verificarExistencia(cpfNormalizado)) { 
+        return {status: 409, mensagem: "CPF já cadastrado."}  
     }
 
-    if (!senha || senha.length < 6 || senha.length > 36) {
-        return {
-            status: 400,
-            mensagem: "Senha Inválida."
-        }
+    if(!emailUtils.validar(emailNormalizado)) {
+        return {status: 400, mensagem: "Email inválido."}
+    }
+
+    if(await (await emailUtils.verificarExistencia(emailNormalizado)).length > 0) {
+        return {status: 409, mensagem: "Email já cadastrado."} 
+    }
+
+    if (!senha || senha.length < 3 || senha.length > 36) {
+        return {status: 400, mensagem: "Senha Inválida."}
     }
 
     const senhaHash = await bcrypt.hash(senha, 10);
     
     try {
-        const usuarioDados = await usuarios.criarUsuario(nome, email, cpf.replace(/\D/g, ''), senhaHash);
+        const usuarioDados = await usuarios.criarUsuario(nomeNormalizado, emailNormalizado, cpfNormalizado, senhaHash);
 
         return {
             status: 201,
@@ -62,35 +62,49 @@ async function cadastrarUsuario(data) {
 async function login(data) {
     const {email, senha} = data
 
-    if(!emailUtils.validar(email)) {
-        return {
-            status: 400,
-            mensagem: "Email inválido."
-        }
+    const emailNormalizado = email?.trim().toLowerCase();
+
+    if(!emailUtils.validar(emailNormalizado) || !senha || senha.length < 3 || senha.length > 36) {
+        return {status: 401, mensagem: "Email ou senha inválidos."}
     }
 
-    if(!senha || senha.length < 0 || senha.length > 36) {
-        return {
-            status: 400,
-            mensagem: "Senha inválido."
-        }
+    let usuario;
+    try {
+        usuario = await emailUtils.verificarExistencia(emailNormalizado)
+    } catch (err) { 
+        console.log(err)
+        return {status: 500, mensagem: "Erro ao verificar usuário."}; 
     }
 
-    const usuario = await emailUtils.verificarExistencia(email)
-    if(await bcrypt.compare(senha, usuario[0].senha_hash)) {
+    if(!usuario || usuario.length === 0) {
+        return {status: 401, mensagem: "Email ou senha inválidos." }
+    }
+
+    if(await bcrypt.compare(senha, usuario[0]?.senha_hash)) {
         const token = jwtUtils.criarToken(usuario[0].id)
         return {
             status: 200,
             mensagem: "login realizado com sucesso.",
-            acessToken: token
+            accessToken: token,
+            usuario: {
+                id: usuario[0]?.id,
+                nome: usuario[0]?.nome,
+                email: usuario[0]?.email
+            }
         }  
     }
 
-    return {
-        status: 401,
-        mensagem: "Email ou senha inválidos."
+    return {status: 401, mensagem: "Email ou senha inválidos."}
+}
+
+async function pegarDadosUsuario(usuarioId) {
+    try {
+        const usuario = await usuarios.pegarUsuarioPorId(usuarioId);
+        return { status: 200, usuario };
+    } catch (err) {
+        console.log(err);
+        return { status: 500, mensagem: "Erro ao buscar usuário." };
     }
 }
 
-
-module.exports = {cadastrarUsuario, login}
+module.exports = {cadastrarUsuario, login, pegarDadosUsuario}

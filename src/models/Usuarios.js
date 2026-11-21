@@ -1,5 +1,12 @@
 const connection = require('../database/connection')
 
+const CATEGORIAS_PADRAO = [
+    {nomeCat: 'Alimentação', tipo: 'saida'},
+    {nomeCat: 'Transporte', tipo: 'saida'},
+    {nomeCat: 'Saúde', tipo: 'saida'},
+    {nomeCat: 'Salário', tipo: 'entrada'},
+];
+
 class Usuario {
 
     criarUsuario(nome, email, cpf, senhaHash) {
@@ -15,7 +22,7 @@ class Usuario {
                     }
 
                     const usuarioId = resultado.insertId;
-                    const linhas = CATEGORIAS_PADRAO.map(([nomeCat, tipo]) => [usuarioId, nomeCat, tipo]);
+                    const linhas = CATEGORIAS_PADRAO.map(({nomeCat, tipo}) => [usuarioId, nomeCat, tipo]);
                     const sqlCategorias = `INSERT INTO categorias (usuario_id, nome, tipo) VALUES ?`;
 
                     connection.query(sqlCategorias, [linhas], (erro) => {
@@ -59,6 +66,18 @@ class Usuario {
         });
     }
 
+    pegarUsuarioPorId(id) {
+        const query = `SELECT * FROM usuarios WHERE id = ?`;
+
+        return new Promise((resolve, reject) => {
+            connection.query(query, [id], (err, resultado) => {
+                if (err) return reject(err);
+
+                resolve(resultado);
+            });
+        });
+    }
+
     verificarEmailExistente(email) {
         const query = `SELECT * FROM usuarios WHERE email = ?`;
 
@@ -72,7 +91,7 @@ class Usuario {
     }
 
     verificarCpfExistente(cpf) {
-         const query = `SELECT * FROM usuarios WHERE cpf = ?`;
+        const query = `SELECT * FROM usuarios WHERE cpf = ?`;
 
         return new Promise((resolve, reject) => {
             connection.query(query, [cpf], (err, resultado) => {
