@@ -6,8 +6,8 @@ router.get('/', categoriasController.listar);
 
 router.post('/', categoriasController.cadastrar);
 
-router.put('/:id', categoriasController.update);
+router.put('/:id', categoriasController.atualizar);
 
-router.delete('/:id', categoriasController.delete);
+router.delete('/:id', categoriasController.deletar);
 
 module.exports = router
