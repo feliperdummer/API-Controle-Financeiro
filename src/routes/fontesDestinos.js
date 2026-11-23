@@ -1,7 +1,7 @@
 const express = require('express')
-const fontesDestinosController = require('../controller/lancamentos')
+const fontesDestinosController = require('../controllers/fontesDestinos')
 
-const router = express.router()
+const router = express.Router()
 
 router.get('/', fontesDestinosController.listar);
 
