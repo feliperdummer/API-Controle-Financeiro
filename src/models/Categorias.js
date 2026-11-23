@@ -3,7 +3,7 @@ const connection = require('../database/connection');
 class Categorias {
 
     listar(usuarioId, tipo) {
-        let query = `SELECT id, nome, tipo, criado_em FROM categorias WHERE usuario_id = ?`;
+        let query = `SELECT id, nome, tipo FROM categorias WHERE usuario_id = ?`;
         const params = [usuarioId];
 
         if (tipo) {
@@ -23,7 +23,7 @@ class Categorias {
     }
 
     buscarPorId(id, usuarioId) {
-        const query = `SELECT id, nome, tipo, criado_em FROM categorias WHERE id = ? AND usuario_id = ? LIMIT 1`;
+        const query = `SELECT id, nome, tipo FROM categorias WHERE id = ? AND usuario_id = ? LIMIT 1`;
 
         return new Promise((resolve, reject) => {
             connection.query(query, [id, usuarioId], (err, resultado) => {

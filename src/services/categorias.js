@@ -1,4 +1,6 @@
-const Categoria = require('../models/Categorias');
+const Categorias = require('../models/Categorias');
+
+const Categoria = new Categorias();
 
 async function listar(query, ids) {
   const { tipo } = query || {};
@@ -41,8 +43,7 @@ async function cadastrar(body, ids) {
   }
 
   try {
-    const criada = await Categoria.criar({
-      usuarioId,
+    const criada = await Categoria.cadastrar(usuarioId, {
       nome: String(nome).trim(),
       tipo
     });
@@ -126,8 +127,8 @@ async function deletar(ids) {
     };
   }
 
-  const vinculados = await Categoria.contarLancamentos(id, usuarioId);
-  if (vinculados > 0) {
+ const temLancamentos = await Categoria.possuiLancamentos(id, usuarioId);
+  if (temLancamentos) {
     return {
       status: 409,
       erro: 'Não é possível excluir uma categoria que possui lançamentos vinculados.'
