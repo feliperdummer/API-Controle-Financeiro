@@ -1,22 +1,22 @@
 const fontesDestinosServices = require('../services/fontesDestinos')
 
-function cadastrar(req, res) {
-	const resposta = fontesDestinosServices.cadastrar(req.body)
+async function cadastrar(req, res) {
+	const resposta = await fontesDestinosServices.cadastrar(req.body)
 	return res.status(resposta.status).json(resposta)
 }
 
-function listar(req, res) {
-	const resposta = fontesDestinosServices.listar(req.body, req.query)
+async function listar(req, res) {
+	const resposta = await fontesDestinosServices.listar(req.body, req.query)
 	return res.status(resposta.status).json(resposta)
 }
 
-function atualizar(req, res) {
-	const resposta = fontesDestinosServices.atualizar(req.body, req.params)
+async function atualizar(req, res) {
+	const resposta = await fontesDestinosServices.atualizar(req.body, req.params)
 	return res.status(resposta.status).json(resposta)
 }
 
-function deletar(req, res) {
-	const resposta = fontesDestinosServices.atualizar(req.body, req.params)
+async function deletar(req, res) {
+	const resposta = await fontesDestinosServices.deletar(req.body, req.params)
 	return res.status(resposta.status).json(resposta)
 }
 

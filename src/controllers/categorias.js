@@ -1,22 +1,22 @@
 const categoriasServices = require('../services/categorias')
 
-function cadastrar(req, res) {
-	const resposta = categoriasServices.cadastrar(req.body)
+async function cadastrar(req, res) {
+	const resposta = await categoriasServices.cadastrar(req.body)
 	return res.status(resposta.status).json(resposta)
 }
 
-function listar(req, res) {
-	const resposta = categoriasServices.listar(req.body, req.query)
+async function listar(req, res) {
+	const resposta = await categoriasServices.listar(req.body, req.query)
 	return res.status(resposta.status).json(resposta)
 } 
 
-function atualizar(req, res) {
-	const resposta = categoriasServices.atualizar(req.body, req.params)
+async function atualizar(req, res) {
+	const resposta = await categoriasServices.atualizar(req.body, req.params)
 	return res.status(resposta.status).json(resposta)
 }
 
-function deletar(req, res) {
-	const resposta = categoriasServices.deletar(req.body, req.params)
+async function deletar(req, res) {
+	const resposta = await categoriasServices.deletar(req.body, req.params)
 	return res.status(resposta.status).json(resposta)
 }
 
