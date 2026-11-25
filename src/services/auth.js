@@ -81,7 +81,11 @@ async function login(data) {
     }
 
     if(await bcrypt.compare(senha, usuario[0]?.senha_hash)) {
-        const token = jwtUtils.criarToken(usuario[0].id)
+        const token = jwtUtils.criarToken({
+            id: usuario[0].id,
+            nome: usuario[0].nome,
+            email: usuario[0].email
+        });
         return {
             status: 200,
             mensagem: "login realizado com sucesso.",

@@ -89,7 +89,7 @@ async function atualizar(body, ids) {
   }
 
   if (existente.tipo !== tipo) {
-    const vinculados = await Categoria.contarLancamentos(id, usuarioId);
+    const vinculados = await Categoria.possuiLancamentos(id, usuarioId);
     if (vinculados > 0) {
       return {
         status: 409,

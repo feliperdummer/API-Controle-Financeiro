@@ -67,13 +67,13 @@ class Usuario {
     }
 
     pegarUsuarioPorId(id) {
-        const query = `SELECT * FROM usuarios WHERE id = ?`;
+        const query = `SELECT id, nome, email, cpf FROM usuarios WHERE id = ? LIMIT 1`;
 
         return new Promise((resolve, reject) => {
             connection.query(query, [id], (err, resultado) => {
                 if (err) return reject(err);
 
-                resolve(resultado);
+                resolve(resultado[0] || null);
             });
         });
     }
