@@ -1,27 +1,35 @@
-**Equipe:** Equipe 07
-**Arquivo:** services/auth.js
+**Equipe:** Equipe 01
+**Membros:**
+    - Carlos Eduardo Gonçalves (2706946)
+    - João Caetano Biagio Lins (2717506)
+    - Felipe Rodrigues Dummer (2706962)
+**Arquivo:** models/Lancamentos.js
 
 ```javascript
-async function cadastrarUsuario(data) {
-  const { nome, cpf, email, senha } = data || {};
-  const cpfLimpo = cpf ? cpf.replace(/\D/g, '') : '';
-
-  if (!cpfUtils.validar(cpfLimpo)) {
-    return { status: 400, mensagem: 'CPF inválido.' };
-  }
-  if (await cpfUtils.verificarExistencia(cpfLimpo)) {
-    return { status: 400, mensagem: 'CPF já cadastrado.' };
-  }
-  const senhaHash = await bcrypt.hash(senha, 10);
-  await usuarios.criarUsuario(nome, email, cpfLimpo, senhaHash);
-  return { status: 201, mensagem: 'Usuário cadastrado com sucesso.' };
+//Arquivo: models/Lancamentos.js
+async function buscarPorId(id) {
+  const [r] = await db.query(
+    `SELECT id, descricao, valor, data FROM lancamentos WHERE id = ?`,
+    [id]
+  );
+  return r[0] || null;
 }
+
+module.exports = { buscarPorId };
 ```
 
-**Erro (linha):** Linha 9 — retorno de status 400 quando o CPF já está cadastrado no banco
-**Regra violada:** RF... / item do checklist ...
+**Erro (linha):** Linha 4 — a consulta filtra pelo ID do lançamento, mas não pelo `usuario_id`; assim, um usuário pode acessar o lançamento de outra pessoa.
+**Regra violada:** RF3 — isolamento dos dados por usuário; cada usuário só pode consultar os próprios lançamentos.
 **Correção:**
 
 ```javascript
-// trecho corrigido
+async function buscarPorId(id, usuarioId) {
+  const [r] = await db.query(
+    `SELECT id, descricao, valor, data FROM lancamentos WHERE id = ? AND usuario_id = ?`,
+    [id, usuarioId]
+  );
+  return r[0] || null;
+}
+
+module.exports = { buscarPorId };
 ```
