@@ -10,4 +10,10 @@ async function login(req, res) {
     res.status(resposta.status).json(resposta)
 }
 
-module.exports = {cadastrarUsuario, login}
+async function getMe(req, res) {
+    const usuarioId = req.auth.id;
+    const resposta = await authServices.pegarDadosUsuario(usuarioId);
+    res.status(resposta.status).json(resposta);
+}
+
+module.exports = {cadastrarUsuario, login, getMe}

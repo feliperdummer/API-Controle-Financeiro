@@ -5,7 +5,7 @@ function validarToken(req, res, next) {
 
     if (!authorization) {
         return res.status(401).json({
-            mensagem: "Token não informado."
+            mensagem: "Token inválido ou expirado."
         });
     }
 
@@ -13,19 +13,19 @@ function validarToken(req, res, next) {
 
     if (!token) {
         return res.status(401).json({
-            mensagem: "Formato do token inválido."
+            mensagem: "Token inválido ou expirado."
         });
     }
 
-    const usuarioId = jwtUtils.validarToken(token);
+    const usuario = jwtUtils.validarToken(token);
 
-    if (!usuarioId) {
+    if (!usuario) {
         return res.status(401).json({
             mensagem: "Token inválido ou expirado."
         });
     }
 
-    req.auth = { id: usuarioId };
+    req.auth = { id: usuario.id };
 
     next();
 }

@@ -1,12 +1,15 @@
 const express = require('express')
-const fontesDestinosController = require('../controller/lancamentos')
+const fontesDestinosController = require('../controllers/fontesDestinos')
+const authMiddleware = require('../middleware/auth')
 
-const router = express.router()
+const router = express.Router()
 
-router.get('/', fontesDestinosController.listar);
+router.get('/', authMiddleware.validarToken, fontesDestinosController.listar);
 
-router.post('/', fontesDestinosController.cadastrar);
+router.post('/', authMiddleware.validarToken, fontesDestinosController.cadastrar);
 
-router.put('/:id', fontesDestinosController.update);
+router.put('/:id', authMiddleware.validarToken, fontesDestinosController.atualizar);
 
-router.delete('/:id', fontesDestinosController.delete);
+router.delete('/:id', authMiddleware.validarToken, fontesDestinosController.deletar);
+
+module.exports = router
