@@ -12,9 +12,4 @@ async function fontesDestinos(req, res) {
 	return res.status(resposta.status).json(resposta)
 }
 
-async function faturas(req, res) {
-	const resposta = await relatoriosServices.faturas(req.body, req.query)
-	return res.status(resposta.status).json(resposta)
-}
-
-module.exports = {categorias, fontesDestinos, faturas}
+module.exports = {categorias, fontesDestinos}

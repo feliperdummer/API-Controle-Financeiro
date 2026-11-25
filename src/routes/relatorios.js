@@ -8,6 +8,4 @@ router.get('/categorias', authMiddleware.validarToken, relatoriosControllers.cat
 
 router.get('/fontesDestinos', authMiddleware.validarToken, relatoriosControllers.fontesDestinos);
 
-router.get('/faturas', authMiddleware.validarToken, relatoriosControllers.faturas);
-
 module.exports = router
