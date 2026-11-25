@@ -1,12 +1,13 @@
 const express = require('express')
 const relatoriosControllers = require('../controllers/relatorios')
+const authMiddleware = require('../middleware/auth')
 
 const router = express.Router()
 
-router.get('/categorias', relatoriosControllers.categorias);
+router.get('/categorias', authMiddleware.validarToken, relatoriosControllers.categorias);
 
-router.get('/fontesDestinos', relatoriosControllers.fontesDestinos);
+router.get('/fontesDestinos', authMiddleware.validarToken, relatoriosControllers.fontesDestinos);
 
-router.get('/faturas', relatoriosControllers.faturas);
+router.get('/faturas', authMiddleware.validarToken, relatoriosControllers.faturas);
 
 module.exports = router

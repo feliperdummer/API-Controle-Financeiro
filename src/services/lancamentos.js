@@ -2,7 +2,7 @@ const Lancamentos = require("../models/Lancamentos");
 const Categorias = require("../models/Categorias");
 const FontesDestinos = require("../models/FontesDestinos");
 const { randomUUID } = require("crypto");
-const { validarDataISO, intervaloMesAtual } = require("../utils/datas");
+const { dataValidaISO, mesCorrenteIntervalo } = require("../utils/datas");
 
 const Lancamento = new Lancamentos();
 const Categoria = new Categorias();
@@ -54,19 +54,19 @@ async function listar(filtros, ids) {
 
   const erros = {};
 
-  const padrao = intervaloMesAtual();
+  const padrao = mesCorrenteIntervalo();
   const dataInicio = inicio || padrao.inicio;
   const dataFim = fim || padrao.fim;
 
-  if (!validarDataISO(dataInicio)) {
+  if (!dataValidaISO(dataInicio)) {
     erros.inicio = "Data inicial inválida (use AAAA-MM-DD).";
   }
-  if (!validarDataISO(dataFim)) {
+  if (!dataValidaISO(dataFim)) {
     erros.fim = "Data final inválida (use AAAA-MM-DD).";
   }
   if (
-    validarDataISO(dataInicio) &&
-    validarDataISO(dataFim) &&
+    dataValidaISO(dataInicio) &&
+    dataValidaISO(dataFim) &&
     dataInicio > dataFim
   ) {
     erros.periodo = "A data inicial não pode ser maior que a data final.";
@@ -136,7 +136,7 @@ async function cadastrar(body, ids) {
     erros.valor = "Informe um valor numérico maior que zero.";
   }
 
-  if (!validarDataISO(data)) {
+  if (!dataValidaISO(data)) {
     erros.data = "Informe uma data válida no formato AAAA-MM-DD.";
   }
 
@@ -230,7 +230,7 @@ async function atualizar(body, ids) {
     erros.valor = "Informe um valor numérico maior que zero.";
   }
 
-  if (!validarDataISO(data)) {
+  if (!dataValidaISO(data)) {
     erros.data = "Informe uma data válida no formato AAAA-MM-DD.";
   }
 

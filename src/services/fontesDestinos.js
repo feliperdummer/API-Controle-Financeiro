@@ -1,6 +1,8 @@
-const FonteDestino = require('../models/FontesDestinos');
+const FontesDestinos = require('../models/FontesDestinos');
 
 const TIPOS_VALIDOS = ['renda', 'conta', 'cartao_credito'];
+
+const fontesdestinos = new FontesDestinos()
 
 function validarPayload(body) {
   const { nome, tipo, dia_fechamento, dia_vencimento, limite } = body || {};
@@ -57,12 +59,12 @@ async function listar(query, ids) {
     };
   }
 
-  const dados = await FonteDestino.listar(usuarioId, tipo);
+  const dados = await fontesdestinos.listar(usuarioId, tipo);
   return { status: 200, dados };
 }
 
 async function cadastrar(body, ids) {
-  const { id, usuarioId } = ids;
+  const { usuarioId } = ids;
   const { erros, dados } = validarPayload(body);
 
   if (Object.keys(erros).length > 0) {
@@ -74,7 +76,7 @@ async function cadastrar(body, ids) {
   }
 
   try {
-    const criada = await FonteDestino.criar({ usuarioId, ...dados });
+    const criada = await fontesdestinos.cadastrar(usuarioId, dados);
     return { status: 201, dados: criada };
   } catch (erro) {
     if (erro && erro.code === 'ER_DUP_ENTRY') {
@@ -97,7 +99,7 @@ async function atualizar(body, ids) {
   }
 
   try {
-    const atualizada = await FonteDestino.atualizar(id, usuarioId, dados);
+    const atualizada = await fontesdestinos.atualizar(id, usuarioId, dados);
     if (!atualizada) {
       return { status: 404, erro: 'Fonte/destino não encontrado.' };
     }
@@ -117,12 +119,12 @@ async function atualizar(body, ids) {
 async function deletar(ids) {
   const { id, usuarioId } = ids;
 
-  const existente = await FonteDestino.buscarPorId(id, usuarioId);
+  const existente = await fontesdestinos.buscarPorId(id, usuarioId);
   if (!existente) {
     return { status: 404, erro: 'Fonte/destino não encontrado.' };
   }
 
-  const vinculados = await FonteDestino.contarLancamentos(id, usuarioId);
+  const vinculados = await fontesdestinos.possuiLancamentos(id, usuarioId);
   if (vinculados > 0) {
     return {
       status: 409,
@@ -130,7 +132,7 @@ async function deletar(ids) {
     };
   }
 
-  await FonteDestino.deletar(id, usuarioId);
+  await fontesdestinos.deletar(id, usuarioId);
   return { status: 204 };
 }
 

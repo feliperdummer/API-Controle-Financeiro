@@ -1,5 +1,5 @@
 const Relatorios = require('../models/Relatorios');
-const { validarDataISO } = require('../utils/datas');
+const { dataValidaISO } = require('../utils/datas');
 
 const Relatorio = new Relatorios();
 
@@ -9,17 +9,17 @@ function resolverPeriodo(filtros) {
 
   if (!inicio) {
     erros.inicio = 'Informe a data inicial (AAAA-MM-DD).';
-  } else if (!validarDataISO(inicio)) {
+  } else if (!dataValidaISO(inicio)) {
     erros.inicio = 'Data inicial inválida (use AAAA-MM-DD).';
   }
 
   if (!fim) {
     erros.fim = 'Informe a data final (AAAA-MM-DD).';
-  } else if (!validarDataISO(fim)) {
+  } else if (!dataValidaISO(fim)) {
     erros.fim = 'Data final inválida (use AAAA-MM-DD).';
   }
 
-  if (validarDataISO(inicio) && validarDataISO(fim) && inicio > fim) {
+  if (dataValidaISO(inicio) && dataValidaISO(fim) && inicio > fim) {
     erros.periodo = 'A data inicial não pode ser maior que a data final.';
   }
 
