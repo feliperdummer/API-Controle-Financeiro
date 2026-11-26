@@ -19,6 +19,6 @@
   "author": "Carlos Eduardo Gonçalves, Felipe Rodrigues Dummer, João Caetano Biagio Lins",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.11"
   }
 }

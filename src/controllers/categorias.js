@@ -8,7 +8,7 @@ async function cadastrar(req, res) {
 
 async function listar(req, res) {
 	const resposta = await categoriasServices.listar(
-		req.query.tipo, { usuarioId: req.auth.id }
+		req.query, { usuarioId: req.auth.id }
 	);
 	return res.status(resposta.status).json(resposta);
 }
