@@ -6,8 +6,7 @@ const router = express.Router()
 
 router.get('/categorias', authMiddleware.validarToken, relatoriosControllers.categorias);
 
+router.get('/fontes-destinos', authMiddleware.validarToken, relatoriosControllers.fontesDestinos);
 router.get('/fontesDestinos', authMiddleware.validarToken, relatoriosControllers.fontesDestinos);
-
-router.get('/faturas', authMiddleware.validarToken, relatoriosControllers.faturas);
 
 module.exports = router
