@@ -25,10 +25,16 @@ app.use("/lancamentos", require("./routes/lancamentos"));
 //Rota de relatórios
 app.use("/relatorios", require("./routes/relatorios"));
 
+// Rota inexistente
+app.use((req, res) => res.status(404).json({ erro: 'Rota não encontrada.' }))
+
 //Se acontecer algum erro, nao mostra para o usuário, retorna apenas uma mensagem generica
 app.use((erro, req, res, next) => {
+    if (erro.name === 'UnauthorizedError') {
+        return res.status(401).json({ erro: 'Token ausente, inválido ou expirado.' });
+    }
     console.error(erro);
-    return res.status(500).json({ erro: "Erro interno do servidor." });
+    return res.status(500).json({ erro: 'Erro interno do servidor.' });
 });
 
 

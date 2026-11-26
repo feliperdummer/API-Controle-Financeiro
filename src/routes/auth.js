@@ -6,6 +6,6 @@ const router = express.Router();
 
 router.post("/cadastrar", authController.cadastrarUsuario);
 router.post("/login", authController.login);
-router.get("/me", authMiddleware.validarToken, authController.getMe);
+router.get("/me", authMiddleware.protegerRota, authController.getMe);
 
 module.exports = router;

@@ -6,6 +6,7 @@ const connection = mysql.createConnection({
     password: process.env.DB_PASSWORD,
     database: 'api_financas',
     dateStrings: true,
+    decimalNumbers: true
 });
 
 connection.connect((err) => {

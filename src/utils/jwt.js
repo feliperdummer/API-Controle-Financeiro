@@ -8,12 +8,4 @@ function criarToken({ id, nome, email }) {
     );
 }
 
-function validarToken(token) {
-    try {
-        return jwt.verify(token, process.env.JWT_SECRET);
-    } catch (err) {
-        return null;
-    }
-}
-
-module.exports = { criarToken, validarToken };
+module.exports = { criarToken };

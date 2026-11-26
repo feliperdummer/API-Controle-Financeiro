@@ -4,14 +4,14 @@ const authMiddleware = require('../middleware/auth')
 
 const router = express.Router()
 
-router.get('/', authMiddleware.validarToken, categoriasController.listar);
+router.get('/', authMiddleware.protegerRota, categoriasController.listar);
 
-router.get('/:tipo', authMiddleware.validarToken, categoriasController.listar);
+router.get('/:tipo', authMiddleware.protegerRota, categoriasController.listar);
 
-router.post('/', authMiddleware.validarToken, categoriasController.cadastrar);
+router.post('/', authMiddleware.protegerRota, categoriasController.cadastrar);
 
-router.put('/:id', authMiddleware.validarToken, categoriasController.atualizar);
+router.put('/:id', authMiddleware.protegerRota, categoriasController.atualizar);
 
-router.delete('/:id', authMiddleware.validarToken, categoriasController.deletar);
+router.delete('/:id', authMiddleware.protegerRota, categoriasController.deletar);
 
 module.exports = router
