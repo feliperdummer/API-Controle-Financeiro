@@ -8,17 +8,6 @@ const Lancamento = new Lancamentos();
 const Categoria = new Categorias();
 const FonteDestino = new FontesDestinos();
 
-function adicionarMes(data, quantidade) {
-  const [ano, mes, dia] = data.split("-").map(Number);
-  const proximoMes = new Date(Date.UTC(ano, mes - 1 + quantidade, 1));
-  const ultimoDia = new Date(
-    Date.UTC(proximoMes.getUTCFullYear(), proximoMes.getUTCMonth() + 1, 0),
-  ).getUTCDate();
-
-  proximoMes.setUTCDate(Math.min(dia, ultimoDia));
-  return proximoMes.toISOString().slice(0, 10);
-}
-
 function validarCompatibilidade(tipo, categoria, fonteDestino, parcelas) {
   const erros = {};
 
@@ -116,7 +105,7 @@ async function cadastrar(body, ids) {
     categoriaId,
     fonteDestinoId,
     parcelas,
-} = body || {};
+  } = body || {};
   const { usuarioId } = ids;
   const erros = {};
 
@@ -194,7 +183,7 @@ async function cadastrar(body, ids) {
       tipo,
       descricao: descricaoNormalizada,
       valor: valorParcela / 100,
-      data: adicionarMes(data, indice),
+      data,
       categoriaId: catId,
       fonteDestinoId: fdId,
       parcelaAtual: indice + 1,
