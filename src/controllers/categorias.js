@@ -7,10 +7,12 @@ async function cadastrar(req, res) {
 }
 
 async function listar(req, res) {
+	const tipo = req.params.tipo || req.query.tipo;
 	const resposta = await categoriasServices.listar(
-		req.query, {usuarioId: req.auth.id})
-	return res.status(resposta.status).json(resposta)
-} 
+		{ tipo }, { usuarioId: req.auth.id }
+	);
+	return res.status(resposta.status).json(resposta);
+}
 
 async function atualizar(req, res) {
 	const resposta = await categoriasServices.atualizar(

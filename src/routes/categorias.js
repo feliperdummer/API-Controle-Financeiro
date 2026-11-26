@@ -6,6 +6,8 @@ const router = express.Router()
 
 router.get('/', authMiddleware.validarToken, categoriasController.listar);
 
+router.get('/:tipo', authMiddleware.validarToken, categoriasController.listar);
+
 router.post('/', authMiddleware.validarToken, categoriasController.cadastrar);
 
 router.put('/:id', authMiddleware.validarToken, categoriasController.atualizar);
