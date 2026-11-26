@@ -67,7 +67,7 @@ class Usuario {
     }
 
     pegarUsuarioPorId(id) {
-        const query = `SELECT * FROM usuarios WHERE id = ?`;
+        const query = `SELECT nome, email, cpf, criado_em FROM usuarios WHERE id = ?`;
 
         return new Promise((resolve, reject) => {
             connection.query(query, [id], (err, resultado) => {
