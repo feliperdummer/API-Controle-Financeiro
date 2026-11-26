@@ -1,9 +1,9 @@
 USE api_financas;
 
--- 1. Pelo menos 2 usuários (senhas em hash bcrypt: Senha123)
+-- 1. Pelo menos 2 usuários (senhas em hash bcrypt: backend1)
 INSERT INTO usuarios (id, nome, email, cpf, senha_hash) VALUES
-(1, 'Ana Silva', 'ana@email.com', '52998224725', '<HASH_BCRYPT_AQUI>'),
-(2, 'Carlos Souza', 'carlos@email.com', '15350946056', '<HASH_BCRYPT_AQUI>');
+(1, 'Ana Silva', 'ana@email.com', '52998224725', '$2b$10$V6i3ZXUcbLfDt0M5wmzreeDEY7psudwCc0N33iYq/HhzvQvmoj/uW'),
+(2, 'Carlos Souza', 'carlos@email.com', '15350946056', '$2b$10$V6i3ZXUcbLfDt0M5wmzreeDEY7psudwCc0N33iYq/HhzvQvmoj/uW');
 
 -- 2. Categorias dos dois usuários (respeitando uq_categorias_nome)
 INSERT INTO categorias (id, usuario_id, nome, tipo) VALUES
