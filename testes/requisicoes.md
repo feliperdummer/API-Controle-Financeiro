@@ -63,10 +63,12 @@ curl -X DELETE http://localhost:8081/fontesdestinos/1 \
 ## Lançamentos
 
 ### GET /lancamentos
-
+curl -X GET http://localhost:8081/lancamentos \
+  -H "Authorization: Bearer SEU_TOKEN_AQUI"
 
 ### GET /lancamentos/:id
-
+curl -X GET http://localhost:8081/lancamentos/1 \
+  -H "Authorization: Bearer SEU_TOKEN_AQUI"
 
 ### POST /lancamentos
 curl -X POST http://localhost:8081/lancamentos \
