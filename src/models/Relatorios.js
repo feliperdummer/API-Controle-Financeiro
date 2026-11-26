@@ -60,6 +60,47 @@ class Relatorios {
             });
         });
     }
+    listarCartoes(usuarioId) {
+        const sql = `
+            SELECT id, nome, dia_fechamento, dia_vencimento, limite
+            FROM fontes_destinos
+            WHERE usuario_id = ? AND tipo = 'cartao_credito'
+            ORDER BY nome ASC
+        `;
+
+        return new Promise((resolve, reject) => {
+            connection.query(sql, [usuarioId], (erro, resultado) => {
+                if (erro) return reject(erro);
+                resolve(resultado);
+            });
+        });
+    }
+
+    listarLancamentosCartoes(usuarioId) {
+        const sql = `
+            SELECT
+                l.id,
+                l.fonte_destino_id,
+                l.descricao,
+                l.valor,
+                l.data,
+                l.parcela_atual,
+                l.total_parcelas
+            FROM lancamentos l
+            INNER JOIN fontes_destinos fd ON fd.id = l.fonte_destino_id
+            WHERE l.usuario_id = ?
+              AND l.tipo = 'saida'
+              AND fd.tipo = 'cartao_credito'
+            ORDER BY l.data ASC, l.parcela_atual ASC, l.id ASC
+        `;
+
+        return new Promise((resolve, reject) => {
+            connection.query(sql, [usuarioId], (erro, resultado) => {
+                if (erro) return reject(erro);
+                resolve(resultado);
+            });
+        });
+    }
 }
 
 module.exports = Relatorios;

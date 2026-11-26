@@ -1,5 +1,6 @@
 const Relatorios = require('../models/Relatorios');
 const { dataValidaISO, calcularPeriodoAnterior } = require('../utils/datas');
+const { calcularFatura, dataSegura } = require('../utils/faturas');
 
 const Relatorio = new Relatorios();
 
@@ -112,4 +113,116 @@ async function fontesDestinos(filtros, ids) {
   return { status: 200, dados };
 }
 
-module.exports = { categorias, fontesDestinos };
+async function faturas(filtros, ids) {
+  const { usuarioId } = ids;
+  const mesesParam = filtros?.meses;
+  const meses = mesesParam !== undefined && mesesParam !== '' ? Number(mesesParam) : 3;
+
+  if (!Number.isInteger(meses) || meses < 1 || meses > 12) {
+    return {
+      status: 400,
+      erro: 'Parâmetros inválidos.',
+      campos: { meses: 'O parâmetro meses deve ser um número inteiro entre 1 e 12.' }
+    };
+  }
+
+  const hojeISO = new Date().toISOString().slice(0, 10);
+  const cartoes = await Relatorio.listarCartoes(usuarioId);
+  const lancamentos = await Relatorio.listarLancamentosCartoes(usuarioId);
+
+  const dados = cartoes.map((cartao) => {
+    const limiteTotal = Number(cartao.limite);
+    const cartaoCfg = {
+      diaFechamento: Number(cartao.dia_fechamento),
+      diaVencimento: Number(cartao.dia_vencimento)
+    };
+
+    const saidasDoCartao = lancamentos.filter(
+      (l) => Number(l.fonte_destino_id) === Number(cartao.id)
+    );
+
+    const faturaAtual = calcularFatura(hojeISO, cartaoCfg, 1);
+    const [anoBase, mesBase] = faturaAtual.referencia.split('-').map(Number);
+
+    const referencias = Array.from({ length: meses }, (_, i) =>
+      dataSegura(anoBase, mesBase - 1 + i, 1).toISOString().slice(0, 7)
+    );
+
+    const agrupadoPorReferencia = saidasDoCartao.reduce((acc, lanc) => {
+      const dataStr = String(lanc.data).slice(0, 10);
+      const parcelaAtual = Number(lanc.parcela_atual);
+      const totalParcelas = Number(lanc.total_parcelas);
+      const valor = Number(lanc.valor);
+
+      const info = calcularFatura(dataStr, cartaoCfg, parcelaAtual);
+
+      if (!acc[info.referencia]) {
+        acc[info.referencia] = {
+          referencia: info.referencia,
+          fechamento: info.fechamento,
+          vencimento: info.vencimento,
+          valorTotal: 0,
+          lancamentos: []
+        };
+      }
+
+      acc[info.referencia].lancamentos.push({
+        id: lanc.id,
+        descricao: totalParcelas > 1
+          ? `${lanc.descricao} — ${parcelaAtual}/${totalParcelas}`
+          : lanc.descricao,
+        valor,
+        data: dataStr,
+        parcela: `${parcelaAtual}/${totalParcelas}`
+      });
+
+      acc[info.referencia].valorTotal = Number(
+        (acc[info.referencia].valorTotal + valor).toFixed(2)
+      );
+
+      return acc;
+    }, {});
+
+    const limiteUtilizado = Number(
+      saidasDoCartao
+        .reduce((soma, lanc) => {
+          const dataStr = String(lanc.data).slice(0, 10);
+          const info = calcularFatura(dataStr, cartaoCfg, Number(lanc.parcela_atual));
+          return info.vencimento >= hojeISO ? soma + Number(lanc.valor) : soma;
+        }, 0)
+        .toFixed(2)
+    );
+
+    const faturasJanela = referencias.map((ref, idx) => {
+      if (agrupadoPorReferencia[ref]) {
+        return agrupadoPorReferencia[ref];
+      }
+
+      const mesFech =
+        cartaoCfg.diaVencimento > cartaoCfg.diaFechamento
+          ? mesBase - 1 + idx
+          : mesBase - 2 + idx;
+
+      return {
+        referencia: ref,
+        fechamento: dataSegura(anoBase, mesFech, cartaoCfg.diaFechamento).toISOString().slice(0, 10),
+        vencimento: dataSegura(anoBase, mesBase - 1 + idx, cartaoCfg.diaVencimento).toISOString().slice(0, 10),
+        valorTotal: 0,
+        lancamentos: []
+      };
+    });
+
+    return {
+      cartaoId: cartao.id,
+      cartao: cartao.nome,
+      limiteTotal,
+      limiteUtilizado,
+      limiteDisponivel: Number((limiteTotal - limiteUtilizado).toFixed(2)),
+      faturas: faturasJanela
+    };
+  });
+
+  return { status: 200, dados };
+}
+
+module.exports = { categorias, fontesDestinos, faturas };

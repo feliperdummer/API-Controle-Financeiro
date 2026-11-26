@@ -35,7 +35,7 @@ async function cadastrarUsuario(data) {
         return {status: 409, mensagem: "Email já cadastrado."} 
     }
 
-    if (!senha || senha.length < 3 || senha.length > 36) {
+    if (!senha || senha.length < 8 || senha.length > 36) {
         return {status: 400, mensagem: "Senha Inválida."}
     }
 
@@ -64,7 +64,7 @@ async function login(data) {
 
     const emailNormalizado = email?.trim().toLowerCase();
 
-    if(!emailUtils.validar(emailNormalizado) || !senha || senha.length < 3 || senha.length > 36) {
+    if(!emailUtils.validar(emailNormalizado) || !senha || senha.length < 8 || senha.length > 36) {
         return {status: 401, mensagem: "Email ou senha inválidos."}
     }
 

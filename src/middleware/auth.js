@@ -1,33 +1,8 @@
-const jwtUtils = require('../utils/jwt')
+const { expressjwt } = require('express-jwt');
 
-function validarToken(req, res, next) {
-    const authorization = req.headers.authorization;
+const protegerRota = expressjwt({
+    secret: process.env.JWT_SECRET,
+    algorithms: ['HS256'],
+});
 
-    if (!authorization) {
-        return res.status(401).json({
-            mensagem: "Token inválido ou expirado."
-        });
-    }
-
-    const token = authorization.split(' ')[1];
-
-    if (!token) {
-        return res.status(401).json({
-            mensagem: "Token inválido ou expirado."
-        });
-    }
-
-    const usuario = jwtUtils.validarToken(token);
-
-    if (!usuario) {
-        return res.status(401).json({
-            mensagem: "Token inválido ou expirado."
-        });
-    }
-
-    req.auth = { id: usuario.id };
-
-    next();
-}
-
-module.exports={validarToken}
+module.exports = { protegerRota };
